@@ -210,6 +210,8 @@ export default function App() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loginError, setLoginError] = useState("");
+  const [loginRole, setLoginRole] = useState("admin");
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
 
 
   const [students, setStudents] = useState(SEED_STUDENTS);
