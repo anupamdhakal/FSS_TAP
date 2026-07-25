@@ -1202,6 +1202,8 @@ function StudentViews({ nav, student, libraryRecords, books, onPayFee, transacti
                   studentId: student.id, 
                   text: `Help request from ${student.name}: ${helpMsg}` 
                 });
+                // also add to messages inbox so admin can see it in the Messages view
+                setMessages((prev) => [{ id: nextId("M"), from: student.name, text: `Help request: ${helpMsg}`, time: now() }, ...prev]);
                 setHelpMsg("");
               }
             }}
