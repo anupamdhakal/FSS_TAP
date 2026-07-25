@@ -228,6 +228,8 @@ export default function App() {
   const [messages, setMessages] = useState([]);
   const [reportOpen, setReportOpen] = useState(false);
   const [pulseReader, setPulseReader] = useState(null);
+  const [showSignOutModal, setShowSignOutModal] = useState(false);
+  const [isSigningOut, setIsSigningOut] = useState(false);
 
 
   const activeStudent = students.find((s) => s.id === activeStudentId);
@@ -518,7 +520,7 @@ export default function App() {
             </select>
           )}
           <button
-            onClick={() => { setRole(null); setNav("Overview"); }}
+            onClick={() => setShowSignOutModal(true)}
             className="flex items-center gap-2 text-neutral-500 hover:text-neutral-200 text-xs px-3 py-2"
           >
             <LogOut className="w-3.5 h-3.5" /> Sign out
