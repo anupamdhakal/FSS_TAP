@@ -6,10 +6,6 @@ import {
   DoorOpen, Utensils, Sun, Moon, Download, TrendingUp, ShoppingCart,
   Store, RefreshCw, DollarSign,
 } from "lucide-react";
-import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  PieChart, Pie, Cell, Legend,
-} from "recharts";
 
 
 /* ---------------------------------- seed data ---------------------------------- */
@@ -2137,15 +2133,15 @@ function CanteenViews({ nav, students, canteenMenu, transactions, staff, sellIte
               <p className={`${T.textFaint} text-sm`}>No sales yet — try a tap at the Canteen Counter in the NFC Simulator, or ring one up below.</p>
             ) : (
               <div style={{ width: "100%", height: 220 }}>
-                <ResponsiveContainer>
-                  <BarChart data={salesByItem} margin={{ top: 8, right: 8, left: -20, bottom: 8 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke={T.gridLine} />
-                    <XAxis dataKey="item" tick={{ fill: T.axisText, fontSize: 10 }} interval={0} angle={-20} textAnchor="end" height={50} />
-                    <YAxis tick={{ fill: T.axisText, fontSize: 11 }} />
-                    <Tooltip contentStyle={tooltipStyle} />
-                    <Bar dataKey="revenue" fill="#22d3ee" radius={[6, 6, 0, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
+                <recharts.ResponsiveContainer>
+                  <recharts.BarChart data={salesByItem} margin={{ top: 8, right: 8, left: -20, bottom: 8 }}>
+                    <recharts.CartesianGrid strokeDasharray="3 3" stroke={T.gridLine} />
+                    <recharts.XAxis dataKey="item" tick={{ fill: T.axisText, fontSize: 10 }} interval={0} angle={-20} textAnchor="end" height={50} />
+                    <recharts.YAxis tick={{ fill: T.axisText, fontSize: 11 }} />
+                    <recharts.Tooltip contentStyle={tooltipStyle} />
+                    <recharts.Bar dataKey="revenue" fill="#22d3ee" radius={[6, 6, 0, 0]} />
+                  </recharts.BarChart>
+                </recharts.ResponsiveContainer>
               </div>
             )}
           </Card>
@@ -2295,15 +2291,15 @@ function CanteenViews({ nav, students, canteenMenu, transactions, staff, sellIte
               <p className={`${T.textFaint} text-sm`}>No sales yet.</p>
             ) : (
               <div style={{ width: "100%", height: 240 }}>
-                <ResponsiveContainer>
-                  <PieChart>
-                    <Pie data={salesByCategory} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label>
-                      {salesByCategory.map((entry, idx) => <Cell key={entry.name} fill={CHART_COLORS[idx % CHART_COLORS.length]} />)}
-                    </Pie>
-                    <Tooltip contentStyle={tooltipStyle} />
-                    <Legend wrapperStyle={{ fontSize: 11, color: T.axisText }} />
-                  </PieChart>
-                </ResponsiveContainer>
+                <recharts.ResponsiveContainer>
+                  <recharts.PieChart>
+                    <recharts.Pie data={salesByCategory} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label>
+                      {salesByCategory.map((entry, idx) => <recharts.Cell key={entry.name} fill={CHART_COLORS[idx % CHART_COLORS.length]} />)}
+                    </recharts.Pie>
+                    <recharts.Tooltip contentStyle={tooltipStyle} />
+                    <recharts.Legend wrapperStyle={{ fontSize: 11, color: T.axisText }} />
+                  </recharts.PieChart>
+                </recharts.ResponsiveContainer>
               </div>
             )}
           </Card>
