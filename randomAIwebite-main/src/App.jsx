@@ -104,7 +104,7 @@ const ROLES = [
 const NAV = {
   admin: ["Overview", "NFC Simulator", "Students", "Announcements", "Reports", "Settings", "Canteen Logs"],
   teacher: ["Overview", "Homework", "Messages", "Attendance", "Grades", "Class Records"],
-  student: ["Overview", "Attendance", "Library", "Fees", "Digital ID", "Grades", "Announcements"],
+  student: ["Overview", "Attendance", "Library", "Fees", "Digital ID", "Grades", "Announcements","Help"],
   parent: ["Overview", "NFC Activity", "Fees", "Messages", "Announcements", "Reports"],
   librarian: ["Overview", "Issue / Return", "Catalog", "Members", "Reports", "Settings"],
   canteen: ["Overview", "Menu", "Sales", "Staff", "Reports"],
