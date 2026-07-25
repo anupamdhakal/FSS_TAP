@@ -36,7 +36,7 @@ const SEED_STUDENTS = [
   { id: "S7", name: "Agrim Gautam", roll: "12A1-19", cls: "12", sec: "A1", nfc: "NFC-10027", guardian: "Buddha Gautam", wallet: 210,
     attendance: [20,18,19,21,17,19,18,16,18,20,18,0], today: "not-marked", inTime: null, outTime: null,
     fees: { tuition: "pending", transport: "pending", exam: "paid" }, feeBalance: 4200 },
-  { id: "S8", name: "Sushant Pandey", roll: "12A1-15", cls: "12", sec: "A1", nfc: "NFC-10028", guardian: "Apsara Pandey", wallet: 800,
+  { id: "S8", name: "Sushant Pandey", roll: "12A1-15", cls: "12", sec: "A1", nfc: "NFC-10028", guardian: "Apshara Pandey", wallet: 800,
     attendance: [23,21,22,23,20,22,22,19,21,23,21,0], today: "not-marked", inTime: null, outTime: null,
     fees: { tuition: "paid", transport: "paid", exam: "paid" }, feeBalance: 0 },
 ];
