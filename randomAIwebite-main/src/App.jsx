@@ -482,11 +482,72 @@ export default function App() {
       : false
   );
 
+  const handleSignOutClick = () => {
+    setShowSignOutModal(true);
+  };
+
+  const handleConfirmSignOut = () => {
+    setShowSignOutModal(false);
+    setIsSigningOut(true);
+    setTimeout(() => {
+      setRole(null);
+      setNav("Overview");
+      setUsername("");
+      setPassword("");
+      setLoginError("");
+      setIsLoggingIn(false);
+      setIsSigningOut(false);
+      setShowSignOutModal(false);
+    }, 2000);
+  };
+
 
   return (
     <div className="min-h-screen bg-neutral-950 flex text-neutral-200">
       <style>{customCss}</style>
 
+      {showSignOutModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4">
+          <div className="w-full max-w-sm rounded-3xl border border-neutral-800 bg-neutral-900 p-6 shadow-2xl">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-neutral-100">Sign out?</h3>
+              <button
+                onClick={() => setShowSignOutModal(false)}
+                className="rounded-full p-1 text-neutral-500 transition hover:bg-neutral-800 hover:text-neutral-200"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            <p className="mt-3 text-sm text-neutral-400">
+              Are you sure you want to sign out of your dashboard?
+            </p>
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                onClick={() => setShowSignOutModal(false)}
+                className="rounded-xl border border-neutral-700 px-3 py-2 text-sm text-neutral-300 transition hover:bg-neutral-800"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirmSignOut}
+                className="rounded-xl bg-cyan-400 px-3 py-2 text-sm font-semibold text-neutral-950 transition hover:bg-cyan-300"
+              >
+                Sign out
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isSigningOut && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 px-4">
+          <div className="w-full max-w-md rounded-3xl border border-neutral-800 bg-neutral-900 p-10 text-center shadow-2xl">
+            <div className="mx-auto mb-6 h-12 w-12 rounded-full border-4 border-cyan-400 border-t-transparent animate-spin" />
+            <h2 className="text-neutral-100 text-2xl font-semibold mb-2">Signing out</h2>
+            <p className="text-neutral-500">Logging you out and returning you to the home page.</p>
+          </div>
+        </div>
+      )}
 
       <aside className="w-56 border-r border-neutral-800 flex flex-col p-4 gap-6 shrink-0">
         <div className="flex items-center gap-2 px-1">
@@ -520,7 +581,7 @@ export default function App() {
             </select>
           )}
           <button
-            onClick={() => setShowSignOutModal(true)}
+            onClick={handleSignOutClick}
             className="flex items-center gap-2 text-neutral-500 hover:text-neutral-200 text-xs px-3 py-2"
           >
             <LogOut className="w-3.5 h-3.5" /> Sign out
