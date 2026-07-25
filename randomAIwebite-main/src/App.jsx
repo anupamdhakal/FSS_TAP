@@ -382,16 +382,39 @@ export default function App() {
     const loginUsers = [...staffUsers, ...studentUsers, ...parentUsers];
 
     const handleLogin = () => {
-      const user = loginUsers.find((u) => u.username === username && u.password === password);
-      if (!user) {
-        setLoginError("Invalid username or password.");
-        return;
-      }
-      setRole(user.role);
-      setNav("Overview");
-      if (user.studentId) setActiveStudentId(user.studentId);
+      if (isLoggingIn) return;
       setLoginError("");
+      setIsLoggingIn(true);
+      const usernameSnapshot = username;
+      const passwordSnapshot = password;
+
+      setTimeout(() => {
+        const user = loginUsers.find((u) => u.username === usernameSnapshot && u.password === passwordSnapshot);
+        if (!user) {
+          setLoginError("Invalid username or password.");
+          setIsLoggingIn(false);
+          return;
+        }
+        setRole(user.role);
+        setNav("Overview");
+        if (user.studentId) setActiveStudentId(user.studentId);
+        setLoginError("");
+        setIsLoggingIn(false);
+      }, 2000);
     };
+
+    if (isLoggingIn) {
+      return (
+        <div className="min-h-screen bg-neutral-950 flex items-center justify-center p-6">
+          <style>{customCss}</style>
+          <div className="bg-neutral-900 border border-neutral-800 rounded-3xl p-10 text-center max-w-md w-full">
+            <div className="mx-auto mb-6 h-12 w-12 rounded-full border-4 border-cyan-400 border-t-transparent animate-spin" />
+            <h2 className="text-neutral-100 text-2xl font-semibold mb-2">Signing in</h2>
+            <p className="text-neutral-500">Preparing your dashboard. Hang tight for a moment.</p>
+          </div>
+        </div>
+      );
+    }
 
     return (
       <div className="min-h-screen bg-neutral-950 flex items-center justify-center p-6">
@@ -437,9 +460,10 @@ export default function App() {
               {loginError && <p className="text-rose-400 text-sm">{loginError}</p>}
               <button
                 onClick={handleLogin}
-                className="w-full bg-cyan-400 text-neutral-950 rounded-2xl px-3 py-3 text-sm font-semibold hover:bg-cyan-300 transition"
+                disabled={isLoggingIn}
+                className={`w-full bg-cyan-400 text-neutral-950 rounded-2xl px-3 py-3 text-sm font-semibold transition hover:bg-cyan-300 ${isLoggingIn ? "cursor-not-allowed opacity-70" : ""}`}
               >
-                Sign in
+                {isLoggingIn ? "Signing in..." : "Sign in"}
               </button>
             </div>
           </Card>
