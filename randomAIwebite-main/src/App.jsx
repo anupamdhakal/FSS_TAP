@@ -102,8 +102,8 @@ const ROLES = [
 
 
 const NAV = {
-  admin: ["Overview", "NFC Simulator", "Students", "Announcements", "Reports", "Settings", "Canteen Logs"],
-  teacher: ["Overview", "Homework", "Messages", "Attendance", "Grades", "Class Records"],
+  admin: ["Overview", "NFC Simulator", "Students", "Announcements", "Reports", "Settings", "Canteen Logs", "Incidents"],
+  teacher: ["Overview", "Homework", "Messages", "Attendance", "Grades", "Class Records", "Incidents"],
   student: ["Overview", "Attendance", "Library", "Fees", "Digital ID", "Grades", "Announcements","Help"],
   parent: ["Overview", "NFC Activity", "Fees", "Messages", "Announcements"],
   librarian: ["Overview", "Issue / Return", "Catalog", "Members", "Reports", "Settings"],
@@ -226,6 +226,7 @@ export default function App() {
   ]);
   const [announcements, setAnnouncements] = useState([]);
   const [messages, setMessages] = useState([]);
+  const [incidentReports, setIncidentReports] = useState([]);
   const [reportOpen, setReportOpen] = useState(false);
   const [pulseReader, setPulseReader] = useState(null);
   const [showSignOutModal, setShowSignOutModal] = useState(false);
@@ -277,6 +278,35 @@ export default function App() {
     pushLog({ studentId, reader: "Canteen Counter", action: `Sold ${item.item} for Rs.${item.price}` });
     pushNotification({ audience: "parent-nfc", studentId, text: `${student.name} purchased ${item.item} for Rs.${item.price}. Wallet balance: Rs.${newWallet}.` });
     return true;
+  };
+
+  /* ---------------- incident reporting (students only) ---------------- */
+  const submitIncidentReport = (studentId, title, description, anonymous) => {
+    const student = students.find((s) => s.id === studentId);
+    const cleanTitle = title.trim();
+    const cleanDescription = description.trim();
+    if (!student || !cleanTitle || !cleanDescription) return;
+
+    setIncidentReports((prev) => [
+      {
+        id: nextId("IR"),
+        studentId,
+        studentName: student.name,
+        title: cleanTitle,
+        description: cleanDescription,
+        anonymous,
+        time: now(),
+      },
+      ...prev,
+    ]);
+
+    pushNotification({
+      audience: "staff",
+      studentId: null,
+      text: anonymous
+        ? `New anonymous incident report: "${cleanTitle}"`
+        : `New incident report from ${student.name}: "${cleanTitle}"`,
+    });
   };
 
 
@@ -476,11 +506,15 @@ export default function App() {
 
 
   const RoleIcon = ROLES.find((r) => r.key === role)?.icon || User;
-  const myNotifications = notifications.filter((n) =>
-    (role === "parent" || role === "student")
-      ? (n.audience === "broadcast") || (n.audience === "parent-nfc" && n.studentId === activeStudentId)
-      : false
-  );
+  const myNotifications = notifications.filter((n) => {
+    if (role === "parent" || role === "student") {
+      return (n.audience === "broadcast") || (n.audience === "parent-nfc" && n.studentId === activeStudentId);
+    }
+    if (role === "admin" || role === "teacher") {
+      return n.audience === "staff";
+    }
+    return false;
+  });
 
   const handleSignOutClick = () => {
     setShowSignOutModal(true);
@@ -614,6 +648,7 @@ export default function App() {
               nav={nav} students={students} scanLogs={scanLogs} books={books}
               readers={READERS} simulateScan={simulateScan} pulseReader={pulseReader}
               announcements={announcements}
+              incidentReports={incidentReports}
               onSend={(text) => {
                 setAnnouncements((prev) => [{ id: nextId("A"), text, time: now() }, ...prev]);
                 pushNotification({ audience: "broadcast", studentId: null, text: `Announcement: ${text}` });
@@ -630,6 +665,7 @@ export default function App() {
               messages={messages}
               onSendMessage={(text) => setMessages((prev) => [{ id: nextId("M"), studentId: activeStudentId, from: "Teacher", text, time: now() }, ...prev])}
               students={students}
+              incidentReports={incidentReports}
             />
           )}
           {role === "student" && (
@@ -638,6 +674,8 @@ export default function App() {
               onPayFee={(type) => updateStudent(activeStudentId, { fees: { ...activeStudent.fees, [type]: "paid" } })}
               transactions={transactions.filter((t) => t.studentId === activeStudentId)}
               notifications={myNotifications}
+              incidentReports={incidentReports.filter((r) => r.studentId === activeStudentId)}
+              onSubmitReport={(title, description, anonymous) => submitIncidentReport(activeStudentId, title, description, anonymous)}
             />
           )}
           {role === "parent" && (
@@ -677,7 +715,7 @@ export default function App() {
 /* ---------------------------------- Admin ---------------------------------- */
 
 
-function AdminViews({ nav, students, scanLogs, books, readers, simulateScan, pulseReader, announcements, onSend }) {
+function AdminViews({ nav, students, scanLogs, books, readers, simulateScan, pulseReader, announcements, onSend, incidentReports }) {
   const [selStudent, setSelStudent] = useState(students[0].id);
   const [selReader, setSelReader] = useState(readers[0].id);
   const [text, setText] = useState("");
@@ -867,6 +905,30 @@ function AdminViews({ nav, students, scanLogs, books, readers, simulateScan, pul
     );
   }
 
+  if (nav === "Incidents") {
+    return (
+      <Card>
+        <SectionTitle>Incident Reports</SectionTitle>
+        {incidentReports.length === 0 ? (
+          <p className="text-neutral-600 text-sm">No incident reports submitted yet.</p>
+        ) : (
+          <div className="flex flex-col gap-3 max-h-[32rem] overflow-y-auto">
+            {incidentReports.map((r) => (
+              <div key={r.id} className="border-b border-neutral-800 pb-3">
+                <div className="flex items-center justify-between gap-2">
+                  <p className="text-neutral-200 text-sm font-medium">{r.title}</p>
+                  <Pill text={r.anonymous ? "Anonymous" : r.studentName} tone={r.anonymous ? "warn" : "info"} />
+                </div>
+                <p className="text-neutral-400 text-sm mt-1">{r.description}</p>
+                <span className="text-neutral-600 text-xs">{r.time}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </Card>
+    );
+  }
+
   return null;
 }
 
@@ -900,7 +962,7 @@ function ScanFeed({ logs, students }) {
 /* ---------------------------------- Teacher ---------------------------------- */
 
 
-function TeacherViews({ nav, homework, onPush, messages, onSendMessage, students }) {
+function TeacherViews({ nav, homework, onPush, messages, onSendMessage, students, incidentReports }) {
   const [msg, setMsg] = useState("");
 
   const gradeMap = students.reduce((acc, student, idx) => {
@@ -1039,6 +1101,29 @@ function TeacherViews({ nav, homework, onPush, messages, onSendMessage, students
       </Card>
     );
   }
+  if (nav === "Incidents") {
+    return (
+      <Card>
+        <SectionTitle>Incident Reports</SectionTitle>
+        {incidentReports.length === 0 ? (
+          <p className="text-neutral-600 text-sm">No incident reports submitted yet.</p>
+        ) : (
+          <div className="flex flex-col gap-3 max-h-[32rem] overflow-y-auto">
+            {incidentReports.map((r) => (
+              <div key={r.id} className="border-b border-neutral-800 pb-3">
+                <div className="flex items-center justify-between gap-2">
+                  <p className="text-neutral-200 text-sm font-medium">{r.title}</p>
+                  <Pill text={r.anonymous ? "Anonymous" : r.studentName} tone={r.anonymous ? "warn" : "info"} />
+                </div>
+                <p className="text-neutral-400 text-sm mt-1">{r.description}</p>
+                <span className="text-neutral-600 text-xs">{r.time}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </Card>
+    );
+  }
   return null;
 }
 
@@ -1046,9 +1131,15 @@ function TeacherViews({ nav, homework, onPush, messages, onSendMessage, students
 /* ---------------------------------- Student ---------------------------------- */
 
 
-function StudentViews({ nav, student, libraryRecords, books, onPayFee, transactions, notifications }) {
+function StudentViews({ nav, student, libraryRecords, books, onPayFee, transactions, notifications, incidentReports, onSubmitReport }) {
+  const [showReportModal, setShowReportModal] = useState(false);
+  const [reportTitle, setReportTitle] = useState("");
+  const [reportDescription, setReportDescription] = useState("");
+  const [reportAnonymous, setReportAnonymous] = useState(false);
+
   if (!student) return null;
   const myRecords = libraryRecords.filter((r) => r.studentId === student.id);
+  const myReports = incidentReports || [];
   const sampleGrades = {
     Mathematics: "A",
     Science: "A-",
@@ -1178,6 +1269,99 @@ function StudentViews({ nav, student, libraryRecords, books, onPayFee, transacti
           )}
         </div>
       </Card>
+    );
+  }
+  if (nav === "Help") {
+    return (
+      <div className="flex flex-col gap-6">
+        <Card>
+          <SectionTitle>Need Help?</SectionTitle>
+          <p className="text-neutral-500 text-sm mb-4">
+            If you've witnessed or experienced an incident at school, let a teacher or admin know. Reports go straight to their notifications.
+          </p>
+          <Button onClick={() => setShowReportModal(true)}>
+            <span className="flex items-center gap-2"><AlertCircle className="w-4 h-4" /> Report an Incident</span>
+          </Button>
+        </Card>
+
+        <Card>
+          <SectionTitle>My Reports</SectionTitle>
+          {myReports.length === 0 ? (
+            <p className="text-neutral-600 text-sm">You haven't submitted any reports yet.</p>
+          ) : (
+            <div className="flex flex-col gap-3">
+              {myReports.map((r) => (
+                <div key={r.id} className="border-b border-neutral-800 pb-3">
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="text-neutral-200 text-sm font-medium">{r.title}</p>
+                    <Pill text={r.anonymous ? "Sent anonymously" : "Sent with your name"} tone={r.anonymous ? "info" : "neutral"} />
+                  </div>
+                  <p className="text-neutral-400 text-sm mt-1">{r.description}</p>
+                  <span className="text-neutral-600 text-xs">{r.time}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </Card>
+
+        {showReportModal && (
+          <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-6">
+            <Card className="max-w-md w-full">
+              <div className="flex justify-between items-center mb-3">
+                <h3 className="font-semibold text-neutral-100">Report an Incident</h3>
+                <button onClick={() => setShowReportModal(false)}>
+                  <X className="w-4 h-4 text-neutral-400" />
+                </button>
+              </div>
+              <div className="flex flex-col gap-3">
+                <div className="space-y-1 text-sm">
+                  <label className="text-neutral-400">Title</label>
+                  <input
+                    value={reportTitle}
+                    onChange={(e) => setReportTitle(e.target.value)}
+                    placeholder="Brief title of the incident"
+                    className="w-full bg-neutral-800 border border-neutral-700 rounded-2xl px-3 py-2 text-neutral-100 placeholder:text-neutral-500"
+                  />
+                </div>
+                <div className="space-y-1 text-sm">
+                  <label className="text-neutral-400">Description</label>
+                  <textarea
+                    value={reportDescription}
+                    onChange={(e) => setReportDescription(e.target.value)}
+                    rows={4}
+                    placeholder="Describe what happened..."
+                    className="w-full bg-neutral-800 border border-neutral-700 rounded-2xl px-3 py-2 text-neutral-100 placeholder:text-neutral-500"
+                  />
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setReportAnonymous((v) => !v)}
+                  className="flex items-center gap-2 text-sm text-neutral-300 mt-1"
+                >
+                  <span className={`w-9 h-5 rounded-full flex items-center px-0.5 transition ${reportAnonymous ? "bg-cyan-400 justify-end" : "bg-neutral-700 justify-start"}`}>
+                    <span className="w-4 h-4 bg-neutral-950 rounded-full" />
+                  </span>
+                  Send anonymously
+                </button>
+                <p className="text-neutral-600 text-xs -mt-2">Your name will be hidden from teachers and admins if this is on.</p>
+                <Button
+                  className="mt-2"
+                  disabled={!reportTitle.trim() || !reportDescription.trim()}
+                  onClick={() => {
+                    onSubmitReport(reportTitle, reportDescription, reportAnonymous);
+                    setReportTitle("");
+                    setReportDescription("");
+                    setReportAnonymous(false);
+                    setShowReportModal(false);
+                  }}
+                >
+                  Submit Report
+                </Button>
+              </div>
+            </Card>
+          </div>
+        )}
+      </div>
     );
   }
   return null;
