@@ -1180,40 +1180,6 @@ function StudentViews({ nav, student, libraryRecords, books, onPayFee, transacti
       </Card>
     );
   }
-  if (nav === "Help") {
-    const [helpMsg, setHelpMsg] = useState("");
-    return (
-      <Card>
-        <SectionTitle>Get Help</SectionTitle>
-        <p className="text-neutral-400 text-sm mb-4">Send a help request to the admin inbox</p>
-        <div className="flex flex-col gap-3">
-          <textarea 
-            value={helpMsg} 
-            onChange={(e) => setHelpMsg(e.target.value)} 
-            placeholder="Describe your issue or question..." 
-            className="flex-1 bg-neutral-800 border border-neutral-700 rounded-xl px-3 py-2 text-sm text-neutral-200 min-h-24 resize-none"
-          />
-          <Button 
-            disabled={!helpMsg.trim()} 
-            onClick={() => { 
-              if (helpMsg.trim()) {
-                pushNotification({ 
-                  audience: "admin", 
-                  studentId: student.id, 
-                  text: `Help request from ${student.name}: ${helpMsg}` 
-                });
-                // also add to messages inbox so admin can see it in the Messages view
-                setMessages((prev) => [{ id: nextId("M"), from: student.name, text: `Help request: ${helpMsg}`, time: now() }, ...prev]);
-                setHelpMsg("");
-              }
-            }}
-          >
-            <span className="flex items-center gap-2"><Send className="w-3.5 h-3.5" /> Send to Admin</span>
-          </Button>
-        </div>
-      </Card>
-    );
-  }
   return null;
 }
 
