@@ -15,28 +15,28 @@ const WORKING_DAYS = [22,20,21,23,20,22,21,19,20,22,20,23];
 
 
 const SEED_STUDENTS = [
-  { id: "S1", name: "Arpan Bhattarai", roll: "10A-01", cls: "10", sec: "A", nfc: "NFC-10021", guardian: "Deepak Bhattarai", wallet: 450,
+  { id: "S1", name: "Arpan Bhattarai", roll: "10A-01", cls: "12", sec: "A1", nfc: "NFC-10021", guardian: "Deepak Bhattarai", wallet: 450,
     attendance: [22,19,21,23,18,20,21,17,19,21,20,0], today: "not-marked", inTime: null, outTime: null,
     fees: { tuition: "paid", transport: "pending", exam: "paid" }, feeBalance: 1800 },
-  { id: "S2", name: "Anupam Dhakal", roll: "10A-02", cls: "10", sec: "A", nfc: "NFC-10022", guardian: "Yogesh Dhakal", wallet: 620,
+  { id: "S2", name: "Anupam Dhakal", roll: "10A-02", cls: "12", sec: "A", nfc: "NFC-10022", guardian: "Yogesh Dhakal", wallet: 620,
     attendance: [21,20,21,22,19,21,20,18,20,22,19,0], today: "not-marked", inTime: null, outTime: null,
     fees: { tuition: "paid", transport: "paid", exam: "pending" }, feeBalance: 900 },
-  { id: "S3", name: "Ashim Katuwal", roll: "9B-14", cls: "9", sec: "B", nfc: "NFC-10023", guardian: "Tul Katuwal", wallet: 210,
+  { id: "S3", name: "Ashim Katuwal", roll: "9B-14", cls: "12", sec: "A1", nfc: "NFC-10023", guardian: "Tul Katuwal", wallet: 210,
     attendance: [20,18,19,21,17,19,18,16,18,20,18,0], today: "not-marked", inTime: null, outTime: null,
     fees: { tuition: "pending", transport: "pending", exam: "paid" }, feeBalance: 4200 },
-  { id: "S4", name: "Anjila Basyal", roll: "12A-05", cls: "12", sec: "A", nfc: "NFC-10024", guardian: "Ramesh Basyal", wallet: 800,
+  { id: "S4", name: "Anjila Basyal", roll: "12A-05", cls: "12", sec: "A1", nfc: "NFC-10024", guardian: "Ramesh Basyal", wallet: 800,
     attendance: [23,21,22,23,20,22,22,19,21,23,21,0], today: "not-marked", inTime: null, outTime: null,
     fees: { tuition: "paid", transport: "paid", exam: "paid" }, feeBalance: 0 },
-     { id: "S5", name: "Rochak Pandey", roll: "10A-07", cls: "10", sec: "A", nfc: "NFC-10025", guardian: "Rajan Pandey", wallet: 450,
+     { id: "S5", name: "Rochak Pandey", roll: "10A-07", cls: "12", sec: "A1", nfc: "NFC-10025", guardian: "Rajan Pandey", wallet: 450,
     attendance: [22,19,21,23,18,20,21,17,19,21,20,0], today: "not-marked", inTime: null, outTime: null,
     fees: { tuition: "paid", transport: "pending", exam: "paid" }, feeBalance: 1800 },
-  { id: "S6", name: "Anup Thapa", roll: "10A-03", cls: "10", sec: "A", nfc: "NFC-10026", guardian: "Rajaram Thapa", wallet: 620,
+  { id: "S6", name: "Anup Thapa", roll: "10A-03", cls: "12", sec: "A1", nfc: "NFC-10026", guardian: "Rajaram Thapa", wallet: 620,
     attendance: [21,20,21,22,19,21,20,18,20,22,19,0], today: "not-marked", inTime: null, outTime: null,
     fees: { tuition: "paid", transport: "paid", exam: "pending" }, feeBalance: 900 },
-  { id: "S7", name: "Agrim Gautam", roll: "9B-19", cls: "9", sec: "B", nfc: "NFC-10027", guardian: "Buddha Gautam", wallet: 210,
+  { id: "S7", name: "Agrim Gautam", roll: "9B-19", cls: "12", sec: "A1", nfc: "NFC-10027", guardian: "Buddha Gautam", wallet: 210,
     attendance: [20,18,19,21,17,19,18,16,18,20,18,0], today: "not-marked", inTime: null, outTime: null,
     fees: { tuition: "pending", transport: "pending", exam: "paid" }, feeBalance: 4200 },
-  { id: "S8", name: "Sushant Pandey", roll: "12A-15", cls: "12", sec: "A", nfc: "NFC-10028", guardian: "Apsara Pandey", wallet: 800,
+  { id: "S8", name: "Sushant Pandey", roll: "12A-15", cls: "12", sec: "A1", nfc: "NFC-10028", guardian: "Apsara Pandey", wallet: 800,
     attendance: [23,21,22,23,20,22,22,19,21,23,21,0], today: "not-marked", inTime: null, outTime: null,
     fees: { tuition: "paid", transport: "paid", exam: "paid" }, feeBalance: 0 },
 ];
@@ -180,7 +180,7 @@ function NfcCard({ student, pulsing }) {
     <div className="relative">
       <div className="w-72 h-44 rounded-2xl bg-gradient-to-br from-neutral-800 to-neutral-950 border border-neutral-700 p-4 flex flex-col justify-between shadow-lg">
         <div className="flex items-center justify-between">
-          <span className="text-neutral-400 text-xs tracking-widest uppercase">Campus ID</span>
+          <span className="text-neutral-400 text-xs tracking-widest uppercase">College ID</span>
           <div className="relative">
             <Nfc className="w-6 h-6 text-cyan-400" />
             {pulsing && <span className="scan-ring" />}
