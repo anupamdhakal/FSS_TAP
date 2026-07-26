@@ -724,6 +724,17 @@ export default function App() {
     });
 
     const loginUsers = [...staffUsers, ...studentUsers, ...parentUsers];
+    const [rememberPassword, setRememberPassword] = useState(false);
+
+    useEffect(() => {
+      const savedUsername = localStorage.getItem("savedUsername");
+      const savedPassword = localStorage.getItem("savedPassword");
+      if (savedUsername && savedPassword) {
+        setUsername(savedUsername);
+        setPassword(savedPassword);
+        setRememberPassword(true);
+      }
+    }, []);
 
     const handleLogin = () => {
       if (isLoggingIn) return;
@@ -739,12 +750,19 @@ export default function App() {
           setIsLoggingIn(false);
           return;
         }
+        if (rememberPassword) {
+          localStorage.setItem("savedUsername", usernameSnapshot);
+          localStorage.setItem("savedPassword", passwordSnapshot);
+        } else {
+          localStorage.removeItem("savedUsername");
+          localStorage.removeItem("savedPassword");
+        }
         setRole(user.role);
         setNav("Overview");
         if (user.studentId) setActiveStudentId(user.studentId);
         setLoginError("");
         setIsLoggingIn(false);
-      }, 1500);
+      }, 1000);
     };
 
     if (isLoggingIn) {
