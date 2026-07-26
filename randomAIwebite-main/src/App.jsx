@@ -326,7 +326,7 @@ function ReportCardModal({ student, onClose }) {
                 <Nfc className="w-7 h-7 text-cyan-400" />
               </div>
               <div>
-                <p className="text-lg font-bold tracking-tight">Fountain Springs School</p>
+                <p className="text-lg font-bold tracking-tight">Fluorescent Secondary School</p>
                 <p className="text-xs text-neutral-500">Academic Report Card</p>
               </div>
             </div>
