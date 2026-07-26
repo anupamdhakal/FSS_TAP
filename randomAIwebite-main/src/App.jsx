@@ -744,7 +744,7 @@ export default function App() {
         if (user.studentId) setActiveStudentId(user.studentId);
         setLoginError("");
         setIsLoggingIn(false);
-      }, 2000);
+      }, 1500);
     };
 
     if (isLoggingIn) {
@@ -861,7 +861,7 @@ export default function App() {
       setIsLoggingIn(false);
       setIsSigningOut(false);
       setShowSignOutModal(false);
-    }, 2000);
+    }, 1500);
   };
 
 
