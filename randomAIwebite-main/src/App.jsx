@@ -793,6 +793,11 @@ export default function App() {
                   <input
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        handleLogin();
+                      }
+                    }}
                     className={`w-full border rounded-2xl px-3 py-2 ${T.inputBg}`}
                     placeholder="admin"
                   />
@@ -803,6 +808,11 @@ export default function App() {
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        handleLogin();
+                      }
+                    }}
                     className={`w-full border rounded-2xl px-3 py-2 ${T.inputBg}`}
                     placeholder="••••••••"
                   />
