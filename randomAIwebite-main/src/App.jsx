@@ -1882,7 +1882,7 @@ function ParentViews({ nav, student, notifications, scanLogs, messages, onSendMe
         {reportOpen && <ReportCardModal student={student} onClose={() => setReportOpen(false)} />}
         {walletModalOpen && (
           <LoadWalletModal
-            student={student}
+            student={student};
             onLoad={(amt) => onLoadWallet(amt)}
             onClose={() => setWalletModalOpen(false)}
           />
